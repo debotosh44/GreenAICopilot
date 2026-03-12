@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Skill Talent - Hiring Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            background: #16213e;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid #2d2d44;
+        }
+        
+        .left-section {
+            flex: 1;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .left-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .left-section p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .features {
+            list-style: none;
+        }
+        
+        .features li {
+            margin-bottom: 15px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features li:before {
+            content: "✓";
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        
+        .right-section {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-container {
+            width: 100%;
+        }
+        
+        .login-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .skills-icon {
+            font-size: 2.2em;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #00cec9;
+            font-size: 1.8em;
+        }
+        
+        .login-subtitle {
+            text-align: center;
+            color: #a0a0b0;
+            margin-bottom: 40px;
+            font-size: 0.95em;
+        }
+        
+        .role-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .role-btn {
+            padding: 15px;
+            border: 2px solid #2d2d44;
+            border-radius: 8px;
+            background: #0f0f1e;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            color: #a0a0b0;
+            font-size: 0.95em;
+        }
+        
+        .role-btn:hover {
+            border-color: #00cec9;
+            background: rgba(0, 206, 201, 0.1);
+            color: #00cec9;
+        }
+        
+        .role-btn.active {
+            border-color: #00cec9;
+            background: #00cec9;
+            color: #0f0f1e;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #2d2d44;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            background: #0f0f1e;
+            color: #e0e0e0;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #00cec9;
+            box-shadow: 0 0 8px rgba(0, 206, 201, 0.3);
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.9em;
+            color: #a0a0b0;
+        }
+        
+        .remember-forgot a {
+            color: #00cec9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #a0a0b0;
+            font-size: 0.95em;
+        }
+        
+        .signup-link a {
+            color: #00cec9;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-section {
+                padding: 40px 30px;
+            }
+            
+            .right-section {
+                padding: 40px 30px;
+            }
+            
+            .role-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-section h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Section -->
+        <div class="left-section">
+            <h2>Green Talent & Inclusive Up skilling Co Pilot (AI)</h2>
+            <p>Your premier hiring platform for sustainable talent acquisition and workforce development.</p>
+            <ul class="features">
+                <li>Advanced talent matching algorithm</li>
+                <li>Real-time collaboration tools</li>
+                <li>Comprehensive candidate analytics</li>
+                <li>Secure data management</li>
+                <li>24/7 dedicated support</li>
+            </ul>
+        </div>
+        
+        <!-- Right Section -->
+        <div class="right-section">
+            <div class="login-container">
+                <div class="login-header">
+                    <span class="skills-icon">⚡</span>
+                    <h2>Welcome Back</h2>
+                </div>
+                <p class="login-subtitle">Sign in to your account</p>
+                
+                <!-- Role Selection -->
+                <div class="role-selection">
+                    <button class="role-btn active" onclick="selectRole(this, 'manager')">👔 Manager</button>
+                   
+                    <button class="role-btn" onclick="selectRole(this, 'recruiter')">🎯 Recruiter</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <label style="margin: 0; font-weight: 500;">
+                            <input type="checkbox" name="remember" style="margin-right: 8px;">
+                            Remember me
+                        </label>
+                        <a href="#forgot">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">Sign In</button>
+                </form>
+                
+                <p class="signup-link">
+                    Don't have an account? <a href="#signup">Sign up here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedRole = 'manager';
+        
+        function selectRole(element, role) {
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+            selectedRole = role;
+        }
+        
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Validate email and password
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            console.log(`Login attempt for ${selectedRole}:`, { email, password });
+            
+            // Redirect to hiring portal
+            window.location.href = '/TalentPool/hiring-portal/';
+        }
+    </script>
+</body>
+</html>

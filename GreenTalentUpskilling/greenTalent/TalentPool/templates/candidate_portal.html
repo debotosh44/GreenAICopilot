@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Portal - Green Skill Talent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: #1a1a2e;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2d2d44;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+        
+        .navbar-items {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header Section */
+        .header-section {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+        }
+        
+        .header-text h1 {
+            color: #00cec9;
+            font-size: 2.2em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-text p {
+            color: #b0b0c0;
+            font-size: 1em;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 206, 201, 0.15) 0%, rgba(0, 184, 148, 0.1) 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid #00cec9;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 206, 201, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.2);
+        }
+        
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00cec9;
+        }
+        
+        .stat-card .label {
+            color: #b0b0c0;
+            font-size: 0.85em;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .chart-container {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #00cec9;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+        }
+        
+        /* Table Section */
+        .table-section {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        
+        .table-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #00cec9;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 2px solid rgba(0, 206, 201, 0.3);
+            padding-bottom: 1rem;
+        }
+        
+        .candidates-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+        
+        .candidates-table thead {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .candidates-table th {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 2px solid #00b894;
+            font-weight: 700;
+        }
+        
+        .candidates-table tbody tr {
+            border-bottom: 1px solid #3d4d66;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .candidates-table tbody tr:hover {
+            background: rgba(0, 206, 201, 0.15);
+            transform: translateX(8px);
+            box-shadow: -4px 0 12px rgba(0, 206, 201, 0.2);
+        }
+        
+        .candidates-table td {
+            padding: 1.1rem 1.2rem;
+            color: #e0e0e0;
+        }
+        
+        .skill-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(0, 206, 201, 0.2) 0%, rgba(0, 184, 148, 0.15) 100%);
+            color: #00cec9;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            border: 1.5px solid #00cec9;
+            box-shadow: 0 2px 8px rgba(0, 206, 201, 0.15);
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        
+        .skill-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 206, 201, 0.3);
+        }
+        
+        .proficiency-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .prof-expert {
+            background: rgba(0, 206, 201, 0.2);
+            color: #00cec9;
+            border: 1px solid #00cec9;
+        }
+        
+        .prof-advanced {
+            background: rgba(139, 195, 74, 0.2);
+            color: #8bc34a;
+            border: 1px solid #8bc34a;
+        }
+        
+        .prof-intermediate {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ffb300;
+            border: 1px solid #ffb300;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+        }
+        
+        .filter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid #3d4d66;
+            border-radius: 8px;
+            background: #16213e;
+            color: #e0e0e0;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-group input:focus {
+            outline: none;
+            border-color: #00cec9;
+            box-shadow: 0 0 10px rgba(0, 206, 201, 0.3);
+            background: #1a2844;
+        }
+        
+        .filter-group input::placeholder {
+            color: #666;
+        }
+        
+        .filter-group button {
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.2);
+        }
+        
+        .filter-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+        }
+        
+        .filter-group button:active {
+            transform: translateY(0);
+        }
+        
+        /* Error Message */
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal for Candidate Details */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(2px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            margin: auto;
+            margin-top: 5%;
+            padding: 2.5rem;
+            border: 2px solid #00cec9;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 20px 60px rgba(0, 206, 201, 0.2), 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .close-modal {
+            color: #00cec9;
+            float: right;
+            font-size: 2.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1;
+        }
+        
+        .close-modal:hover {
+            color: #00b894;
+            transform: rotate(90deg);
+        }
+        
+        .modal-detail {
+            margin: 1.2rem 0;
+            padding: 1rem;
+            background: rgba(0, 206, 201, 0.05);
+            border-left: 4px solid #00cec9;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-detail:hover {
+            background: rgba(0, 206, 201, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 206, 201, 0.1);
+        }
+        
+        .modal-detail-label {
+            color: #00cec9;
+            font-weight: 700;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        
+        .modal-detail-value {
+            color: #e0e0e0;
+            font-size: 1.05em;
+            margin-top: 0.6rem;
+            line-height: 1.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-text h1 {
+                font-size: 1.5em;
+            }
+            
+            .candidates-table {
+                font-size: 0.9em;
+            }
+            
+            .candidates-table th,
+            .candidates-table td {
+                padding: 0.7rem;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+            }
+            
+            .filter-group input,
+            .filter-group button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="goHome()">
+            <i class="fas fa-brain"></i> Green Skill Talent
+        </div>
+        <div class="navbar-items">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Hiring Portal
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="container">
+        {% if error %}
+        <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i> Error: {{ error }}
+        </div>
+        {% else %}
+        
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-text">
+                <h1><i class="fas fa-briefcase"></i> Candidate Portal</h1>
+                <p>View and analyze all available candidates with their skills and proficiency levels</p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="value">{{ total_candidates }}</div>
+                    <div class="label">Total Candidates</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <!-- Skills Distribution Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-chart-pie"></i> Skills Distribution
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Proficiency Distribution Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-chart-doughnut"></i> Proficiency Level Distribution
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="proficiencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="Search by name or skill..." onkeyup="filterTable()">
+                <button onclick="clearFilter()"><i class="fas fa-redo"></i> Clear Filter</button>
+            </div>
+        </div>
+        
+        <!-- Candidates Table -->
+        <div class="table-section">
+            <div class="table-title">
+                <i class="fas fa-users"></i> Candidates (<span id="tableCount">{{ total_candidates }}</span>)
+            </div>
+            
+            <table class="candidates-table" id="candidatesTable">
+                <thead>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <th>Skills</th>
+                        <th>Current Role</th>
+                        <th>Proficiency Level</th>
+                        <th>Grade</th>
+                        <th>Employment Type</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% for candidate in candidates %}
+                    <tr onclick="showCandidateDetails('{{ candidate.candidate_name|escapejs }}', '{{ candidate.skills|escapejs }}', '{{ candidate.current_role|escapejs }}', '{{ candidate.proficiency_level|escapejs }}', '{{ candidate.grade|escapejs }}', '{{ candidate.employment_type|escapejs }}', '{{ candidate.email|escapejs }}', '{{ candidate.phone|escapejs }}', {{ candidate.skill_vectors_json|safe }})">
+                        <td>{{ candidate.candidate_name }}</td>
+                        <td><span class="skill-badge">{{ candidate.skills }}</span></td>
+                        <td>{{ candidate.current_role }}</td>
+                        <td>
+                            <span class="proficiency-badge prof-{{ candidate.proficiency_level|lower|default:"entry" }}">
+                                {{ candidate.proficiency_level|default:"N/A" }}
+                            </span>
+                        </td>
+                        <td>{{ candidate.grade }}</td>
+                        <td><span style="background:rgba(0,184,148,0.15);color:#00cec9;padding:0.3rem 0.6rem;border-radius:6px;font-size:0.85em;">{{ candidate.employment_type }}</span></td>
+                        <td style="font-size:0.9em;color:#b0b0c0;">{{ candidate.email }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% endif %}
+    </div>
+    
+    <!-- Candidate Details Modal -->
+    <div id="candidateModal" class="modal">
+        <div class="modal-content" style="max-width:600px;">
+            <span class="close-modal" onclick="closeCandidateDetails()">&times;</span>
+            <h2 style="color: #00cec9; margin-bottom: 1.5rem;">
+                <i class="fas fa-user-circle"></i> Candidate Details
+            </h2>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Name</div>
+                <div class="modal-detail-value" id="modalName"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">All Skills & Proficiency</div>
+                <div class="modal-detail-value" id="modalAllSkills" style="margin-top:0.5rem;"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Current Role</div>
+                <div class="modal-detail-value" id="modalRole"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Grade</div>
+                <div class="modal-detail-value" id="modalGrade"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Employment Type</div>
+                <div class="modal-detail-value" id="modalEmployment"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Email</div>
+                <div class="modal-detail-value" id="modalEmail" style="word-break:break-all;"></div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-detail-label">Phone</div>
+                <div class="modal-detail-value" id="modalPhone"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Chart.js configuration
+        const skillsLabels = {{ skills_labels|safe }};
+        const skillsData = {{ skills_data|safe }};
+        const proficiencyLabels = {{ proficiency_labels|safe }};
+        const proficiencyData = {{ proficiency_data|safe }};
+        
+        const chartColors = [
+            '#00cec9', '#00b894', '#ffd700', '#ff6b6b', '#a29bfe',
+            '#fd79a8', '#fab1a0', '#74b9ff', '#00b894', '#00cec9'
+        ];
+        
+        // Skills Distribution Pie Chart
+        const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+        new Chart(skillsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: skillsLabels,
+                datasets: [{
+                    data: skillsData,
+                    backgroundColor: chartColors.slice(0, skillsLabels.length),
+                    borderColor: '#1a2332',
+                    borderWidth: 3,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e0e0e0',
+                            padding: 15,
+                            font: { size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Proficiency Distribution Bar Chart
+        const profCtx = document.getElementById('proficiencyChart').getContext('2d');
+        new Chart(profCtx, {
+            type: 'bar',
+            data: {
+                labels: proficiencyLabels,
+                datasets: [{
+                    label: 'Number of Candidates',
+                    data: proficiencyData,
+                    backgroundColor: ['#00cec9', '#8bc34a', '#ffb300'],
+                    borderColor: ['#00b894', '#7cb342', '#ff9800'],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#e0e0e0',
+                            font: { size: 12 }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#e0e0e0' },
+                        grid: { color: '#3d4d66' }
+                    },
+                    y: {
+                        ticks: { color: '#e0e0e0' },
+                        grid: { color: '#3d4d66' }
+                    }
+                }
+            }
+        });
+        
+        // Filter table function
+        function filterTable() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('candidatesTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let visibleCount = 0;
+            
+            for (let row of rows) {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(searchValue)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+            
+            document.getElementById('tableCount').innerText = visibleCount;
+        }
+        
+        // Clear filter
+        function clearFilter() {
+            document.getElementById('searchInput').value = '';
+            filterTable();
+        }
+        
+        // Show candidate details
+        function showCandidateDetails(name, skill, role, prof, grade, employment, email, phone, skillVectors) {
+            document.getElementById('modalName').innerText = name || 'N/A';
+            document.getElementById('modalRole').innerText = role || 'N/A';
+            document.getElementById('modalGrade').innerText = grade || 'N/A';
+            document.getElementById('modalEmployment').innerText = employment || 'N/A';
+            document.getElementById('modalEmail').innerText = email || 'N/A';
+            document.getElementById('modalPhone').innerText = phone || 'N/A';
+            
+            // Display all skills from skill_vectors
+            const allSkillsDiv = document.getElementById('modalAllSkills');
+            if (skillVectors && skillVectors.length > 0) {
+                let skillsHTML = '';
+                skillVectors.forEach(item => {
+                    const skillName = item.skill || 'Unknown';
+                    const profLevel = item.proficiency_level || 'N/A';
+                    const score = item.skill_level_score || 0;
+                    
+                    // Color coding based on proficiency level
+                    let badgeColor = '#00cec9';
+                    if (profLevel.toLowerCase() === 'expert') {
+                        badgeColor = '#00cec9';
+                    } else if (profLevel.toLowerCase() === 'advanced') {
+                        badgeColor = '#8bc34a';
+                    } else if (profLevel.toLowerCase() === 'intermediate') {
+                        badgeColor = '#ffb300';
+                    } else {
+                        badgeColor = '#ff6b6b';
+                    }
+                    
+                    skillsHTML += `<div style="margin-bottom:0.8rem;padding:0.8rem;background:rgba(0,0,0,0.2);border-left:3px solid ${badgeColor};border-radius:4px;">
+                        <div style="font-weight:600;color:${badgeColor};">${skillName}</div>
+                        <div style="font-size:0.9em;color:#b0b0c0;margin-top:0.3rem;">
+                            Proficiency: <span style="color:${badgeColor};">${profLevel}</span> (Score: ${score}/3)
+                        </div>
+                    </div>`;
+                });
+                allSkillsDiv.innerHTML = skillsHTML;
+            } else if (skill) {
+                // Fallback to single skill if no skill_vectors
+                allSkillsDiv.innerHTML = `<span class="skill-badge">${skill}</span>`;
+            } else {
+                allSkillsDiv.innerText = 'N/A';
+            }
+            
+            document.getElementById('candidateModal').style.display = 'block';
+        }
+        
+        // Close candidate details modal
+        function closeCandidateDetails() {
+            document.getElementById('candidateModal').style.display = 'none';
+        }
+        
+        // Navigation functions
+        function goBack() {
+            window.location.href = '/hiring-portal/';
+        }
+        
+        function goHome() {
+            window.location.href = '/home/';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('candidateModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates - Green Skill Talent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: #1a1a2e;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2d2d44;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+        
+        .navbar-items {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header Section */
+        .header-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.6s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header-text h1 {
+            color: #1a1a2e;
+            font-size: 2em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-text p {
+            color: #888;
+            font-size: 1em;
+        }
+
+        /* Candidate list table */
+        .candidate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .candidate-table th,
+        .candidate-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #2d2d44;
+            color: #b0b0c0;
+            text-align: left;
+        }
+        .candidate-table thead {
+            background: #16213e;
+            color: #00cec9;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.6s ease-out 0.1s backwards;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .filter-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .filter-title i {
+            color: #00b894;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-item label {
+            display: block;
+            margin-bottom: 0.7rem;
+            color: #333;
+            font-weight: 700;
+            font-size: 0.95em;
+        }
+        
+        .filter-item select {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-item select:focus {
+            outline: none;
+            border-color: #00b894;
+            box-shadow: 0 0 8px rgba(0, 184, 148, 0.15);
+        }
+        
+        /* File Upload Section */
+        .upload-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #e0f8f5 100%);
+            border: 2px dashed #00b894;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: #0099ad;
+            background: linear-gradient(135deg, #e8f5e9 0%, #d4eeeb 100%);
+        }
+        
+        .upload-icon {
+            font-size: 2.5em;
+            color: #00b894;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-section h3 {
+            color: #1a1a2e;
+            margin-bottom: 0.5rem;
+            font-size: 1.2em;
+        }
+        
+        .upload-section p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.95em;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 1rem 2rem;
+            background: white;
+            border: 2px solid #00b894;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #00b894;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-label:hover {
+            background: #f0fdf4;
+            transform: translateY(-2px);
+        }
+        
+        .uploaded-file {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.7rem 1.2rem;
+            background: #e8f5e9;
+            border-radius: 8px;
+            color: #00b894;
+            font-weight: 600;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .action-btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #2d2d44;
+            color: #e0e0e0;
+            border: 1px solid #3a3a52;
+        }
+        
+        .btn-secondary:hover {
+            background: #3a3a52;
+        }
+        
+        /* Results Section */
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .results-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .results-title i {
+            color: #00b894;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        
+        .results-table thead {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .results-table thead th {
+            border-bottom: 2px solid #00b894;
+        }
+        
+        .results-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .score-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+        
+        .score-excellent {
+            background: rgba(0, 206, 201, 0.15);
+            color: #00cec9;
+        }
+        
+        .score-good {
+            background: rgba(139, 195, 74, 0.15);
+            color: #8bc34a;
+        }
+        
+        .score-moderate {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ffb300;
+        }
+        
+        .score-low {
+            background: rgba(244, 67, 54, 0.15);
+            color: #ff6b6b;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #2d2d44;
+            border-top: 4px solid #00cec9;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-box {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            color: #64b5f6;
+            font-size: 0.9em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+            
+            .header-text h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="goBack()">
+            <i class="fas fa-brain"></i> Green Skill Talent
+        </div>
+        <div class="navbar-items">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Hiring Portal
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-text">
+                <h1><i class="fas fa-users"></i> Candidate Matching</h1>
+                <p>Filter candidates by skills, proficiency level, and experience. Upload your candidate database and get detailed matching scores.</p>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title">
+                <i class="fas fa-filter"></i> Filter Criteria
+            </div>
+            
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i> Select your desired skills, proficiency level, and experience requirements. Then upload a CSV or Excel file with candidate profiles.
+            </div>
+            
+            <div class="filter-grid">
+                <div class="filter-item">
+                    <label for="skillSelect">
+                        <i class="fas fa-code"></i> Skill
+                    </label>
+                    <select id="skillSelect">
+                        <option value="">Select Skill</option>
+                        <option value="Data">Data</option>
+                        <option value="Python">Python</option>
+                        <option value="Cloud">Cloud</option>
+                        <option value="Gen AI">Gen AI</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label for="proficiencySelect">
+                        <i class="fas fa-graduation-cap"></i> Proficiency Level
+                    </label>
+                    <select id="proficiencySelect">
+                        <option value="">Select Proficiency</option>
+                        <option value="E0">E0 - Entry Level</option>
+                        <option value="E1">E1 - Junior</option>
+                        <option value="E2">E2 - Mid-Level</option>
+                        <option value="E3">E3 - Senior</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label for="accrualSelect">
+                        <i class="fas fa-clock"></i> Experience Required
+                    </label>
+                    <select id="accrualSelect">
+                        <option value="">Select Experience</option>
+                        <option value="Recent">Recent (0-6 months)</option>
+                        <option value="1year">1 Year Back</option>
+                        <option value="2years">2 Years Back</option>
+                        <option value="more">More than 2 Years</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- File Upload Section -->
+        <div class="upload-section">
+            <div class="upload-icon">
+                <i class="fas fa-file-upload"></i>
+            </div>
+            <h3>Upload Candidate Database</h3>
+            <p>Upload a CSV or Excel file with candidate information</p>
+            <div class="file-input-wrapper">
+                <input type="file" id="candidateFile" accept=".xlsx,.xls,.csv" onchange="handleFileUpload(this)">
+                <label for="candidateFile" class="file-upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i> Browse or Drop File
+                </label>
+            </div>
+            <div id="fileNameDisplay"></div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn btn-primary" onclick="analyzeMatching()">
+                <i class="fas fa-magic"></i> Analyze Candidates
+            </button>
+            <button class="action-btn btn-secondary" onclick="resetForm()">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+        
+        <!-- Loading Section -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Analyzing candidates and generating scores...</p>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-title">
+                <i class="fas fa-bar-chart"></i> Matching Results
+            </div>
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <th>Skill Match</th>
+                        <th>Proficiency Match</th>
+                        <th>Experience Match</th>
+                        <th>Overall Score</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        function goBack() {
+            window.location.href = '/TalentPool/hiring-portal/';
+        }
+        
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                document.getElementById('fileNameDisplay').innerHTML = `<div class="uploaded-file"><i class="fas fa-file-check"></i> ${fileName}</div>`;
+            }
+        }
+        
+        function analyzeMatching() {
+            const skill = document.getElementById('skillSelect').value;
+            const proficiency = document.getElementById('proficiencySelect').value;
+            const accrual = document.getElementById('accrualSelect').value;
+            const candidateFile = document.getElementById('candidateFile').files[0];
+            
+            // Validation
+            if (!skill) {
+                alert('Please select a skill');
+                return;
+            }
+            
+            if (!proficiency) {
+                alert('Please select proficiency level');
+                return;
+            }
+            
+            if (!accrual) {
+                alert('Please select experience requirement');
+                return;
+            }
+            
+            if (!candidateFile) {
+                alert('Please upload a candidate file');
+                return;
+            }
+            
+            // Check file format
+            if (!candidateFile.name.match(/\.(xlsx?|xls|csv)$/)) {
+                alert('Please upload a valid Excel or CSV file');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            
+            const formData = new FormData();
+            formData.append('skill', skill);
+            formData.append('proficiency', proficiency);
+            formData.append('accrual', accrual);
+            formData.append('candidate_file', candidateFile);
+            
+            fetch('/TalentPool/analyze-candidates/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                if (data.success) {
+                    displayResults(data.results);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error analyzing file: ' + error);
+            });
+        }
+        
+        function displayResults(results) {
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            
+            results.forEach(result => {
+                const skillScore = result.skill_match;
+                const profScore = result.proficiency_match;
+                const expScore = result.experience_match;
+                const overallScore = Math.round((skillScore + profScore + expScore) / 3);
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                if (overallScore >= 80) {
+                    statusClass = 'score-excellent';
+                    statusText = 'Excellent';
+                } else if (overallScore >= 60) {
+                    statusClass = 'score-good';
+                    statusText = 'Good';
+                } else if (overallScore >= 40) {
+                    statusClass = 'score-moderate';
+                    statusText = 'Moderate';
+                } else {
+                    statusClass = 'score-low';
+                    statusText = 'Low';
+                }
+                
+                const row = `
+                    <tr>
+                        <td><strong>${result.name}</strong></td>
+                        <td><span class="score-badge ${skillScore >= 70 ? 'score-excellent' : skillScore >= 50 ? 'score-good' : 'score-low'}">${skillScore}%</span></td>
+                        <td><span class="score-badge ${profScore >= 70 ? 'score-excellent' : profScore >= 50 ? 'score-good' : 'score-low'}">${profScore}%</span></td>
+                        <td><span class="score-badge ${expScore >= 70 ? 'score-excellent' : expScore >= 50 ? 'score-good' : 'score-low'}">${expScore}%</span></td>
+                        <td><span class="score-badge ${statusClass}"><strong>${overallScore}%</strong></span></td>
+                        <td>${statusText}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+            
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+        
+        function resetForm() {
+            document.getElementById('skillSelect').value = '';
+            document.getElementById('proficiencySelect').value = '';
+            document.getElementById('accrualSelect').value = '';
+            document.getElementById('candidateFile').value = '';
+            document.getElementById('fileNameDisplay').innerHTML = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

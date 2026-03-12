@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Engine - Green Skill Talent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: #1a1a2e;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2d2d44;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+        
+        .navbar-items {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .navbar-items a {
+            color: #b0b0c0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-items a:hover {
+            color: #00cec9;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header Section */
+        .header-section {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.6s ease-out;
+            border: 1px solid #2d2d44;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .header-icon {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-text h1 {
+            color: #00cec9;
+            font-size: 2.5em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-text p {
+            color: #a0a0b0;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+        
+        /* Matching Options */
+        .matching-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .match-card {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out backwards;
+            border: 1px solid #2d2d44;
+        }
+        
+        .match-card:nth-child(1) { animation-delay: 0.1s; }
+        .match-card:nth-child(2) { animation-delay: 0.2s; }
+        .match-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .match-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00b894 0%, #00cec9 100%);
+            transition: left 0.3s ease;
+        }
+        
+        .match-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 184, 148, 0.2);
+        }
+        
+        .match-card:hover::before {
+            left: 0;
+        }
+        
+        .card-icon {
+            font-size: 2.5em;
+            color: #00b894;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 800;
+            color: #00cec9;
+            margin-bottom: 0.8rem;
+        }
+        
+        .card-description {
+            color: #a0a0b0;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 0.95em;
+        }
+        
+        .card-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-features li {
+            color: #b0b0c0;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9em;
+        }
+        
+        .card-features li:before {
+            content: "✓";
+            color: #00b894;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .match-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+        
+        .match-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease-out 0.4s backwards;
+            border: 1px solid #2d2d44;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: rgba(0, 206, 201, 0.1);
+            border: 1px solid #2d2d44;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #a0a0b0;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        /* Process Section */
+        .process-section {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease-out 0.5s backwards;
+            border: 1px solid #2d2d44;
+        }
+        
+        .process-title {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: #00cec9;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .step {
+            position: relative;
+            text-align: center;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 800;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+        }
+        
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #00cec9;
+            margin-bottom: 0.8rem;
+        }
+        
+        .step-description {
+            color: #a0a0b0;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: #16213e;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideInDown 0.3s ease;
+            border: 1px solid #2d2d44;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #2d2d44;
+            padding-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: 800;
+            color: #00cec9;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #a0a0b0;
+            transition: color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: #00cec9;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+            font-weight: 700;
+            font-size: 0.95em;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #2d2d44;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: #0f0f1e;
+            color: #e0e0e0;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00cec9;
+            box-shadow: 0 0 8px rgba(0, 206, 201, 0.15);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .upload-label {
+            display: block;
+            padding: 1rem;
+            background: rgba(0, 206, 201, 0.08);
+            border: 2px dashed #00cec9;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-label:hover {
+            background: rgba(0, 206, 201, 0.15);
+            border-color: #00b894;
+        }
+        
+        .upload-icon {
+            font-size: 1.8em;
+            color: #00cec9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(0, 206, 201, 0.1);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            color: #00cec9;
+            font-weight: 600;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+        
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        .modal-btn-secondary {
+            background: #2d2d44;
+            color: #e0e0e0;
+            border: 1px solid #3a3a52;
+        }
+        
+        .modal-btn-secondary:hover {
+            background: #3a3a52;
+        }
+        
+        .results-container {
+            display: none;
+            margin-top: 1.5rem;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        
+        .results-table thead {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #2d2d44;
+            color: #b0b0c0;
+        }
+        
+        .results-table thead th {
+            border-bottom: 2px solid #00cec9;
+            color: white;
+        }
+        
+        .score-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85em;
+        }
+        
+        .score-high {
+            background: rgba(0, 206, 201, 0.15);
+            color: #00cec9;
+        }
+        
+        .score-medium {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ffb300;
+        }
+        
+        .score-low {
+            background: rgba(244, 67, 54, 0.15);
+            color: #ff6b6b;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #2d2d44;
+            border-top: 4px solid #00cec9;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-items {
+                gap: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-text h1 {
+                font-size: 1.8em;
+            }
+            
+            .matching-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="goBack()">
+            <i class="fas fa-brain"></i> Green Skill Talent
+        </div>
+        <div class="navbar-items">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back to Portal
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Match Engine</h1>
+                    <p>Intelligent candidate-to-job matching powered by advanced algorithms. Find the perfect fit for your open positions.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">Match Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">Candidates Matched</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Faster Hiring</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">87%</div>
+                    <div class="stat-label">Retention Rate</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Matching Options -->
+        <div class="matching-options">
+            <!-- Card 1: Candidate to Job -->
+            <div class="match-card">
+                <div class="card-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="card-title">Match Candidates to Jobs</div>
+                <div class="card-description">
+                    Find the best candidates for your open positions based on skills, experience, and preferences.
+                </div>
+                <ul class="card-features">
+                    <li>Skill-based matching</li>
+                    <li>Experience level alignment</li>
+                    <li>Salary expectations match</li>
+                    <li>Location preferences</li>
+                </ul>
+                <button class="match-btn" onclick="startMatching('candidate-to-job')">
+                    <i class="fas fa-arrow-right"></i> Start Matching
+                </button>
+            </div>
+            
+            <!-- Card 2: Job to Candidate -->
+            <div class="match-card">
+                <div class="card-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="card-title">Match Jobs to Candidates</div>
+                <div class="card-description">
+                    Recommend ideal job opportunities to candidates based on their profile and career goals.
+                </div>
+                <ul class="card-features">
+                    <li>Career path recommendations</li>
+                    <li>Growth opportunities</li>
+                    <li>Skill development alignment</li>
+                    <li>Industry preferences</li>
+                </ul>
+                <button class="match-btn" onclick="startMatching('job-to-candidate')">
+                    <i class="fas fa-arrow-right"></i> Start Matching
+                </button>
+            </div>
+            
+            <!-- Card 3: Bulk Matching -->
+            <div class="match-card">
+                <div class="card-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="card-title">Bulk Matching Analysis</div>
+                <div class="card-description">
+                    Perform large-scale matching between multiple candidates and positions simultaneously.
+                </div>
+                <ul class="card-features">
+                    <li>Process 100+ matches at once</li>
+                    <li>Detailed scoring reports</li>
+                    <li>Batch recommendations</li>
+                    <li>Export results</li>
+                </ul>
+                <button class="match-btn" onclick="startMatching('bulk-matching')">
+                    <i class="fas fa-arrow-right"></i> Start Matching
+                </button>
+            </div>
+        </div>
+        
+        <!-- Process Section -->
+        <div class="process-section">
+            <h2 class="process-title">How Match Engine Works</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Profile Analysis</div>
+                    <div class="step-description">
+                        We analyze candidate profiles and job requirements in detail to understand qualifications and needs.
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Algorithm Matching</div>
+                    <div class="step-description">
+                        Our advanced AI algorithm compares skills, experience, culture fit, and career goals.
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Score & Rank</div>
+                    <div class="step-description">
+                        Matches are scored from 0-100 based on compatibility and ranked by best fit.
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Generate Report</div>
+                    <div class="step-description">
+                        Get detailed reports with insights, recommendations, and next steps for each match.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Matching Modal -->
+    <div id="bulkMatchingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Bulk Matching Analysis</h2>
+                <button class="close-btn" onclick="closeBulkMatchingModal()">&times;</button>
+            </div>
+            
+            <!-- Analysis Form -->
+            <div id="analysisForm">
+                <div class="form-group">
+                    <label for="skillsInput">
+                        <i class="fas fa-lightbulb"></i> Enter Required Skills
+                    </label>
+                    <textarea id="skillsInput" placeholder="e.g., Python, React, AWS, MySQL, Problem Solving (comma-separated or line-separated)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="excelFile">
+                        <i class="fas fa-file-upload"></i> Upload Excel File with Candidates
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="excelFile" accept=".xlsx,.xls,.csv" onchange="handleFileUpload(this)">
+                        <label for="excelFile" class="upload-label">
+                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div>Click to upload or drag and drop</div>
+                            <div style="font-size: 0.85em; color: #999;">Excel (.xlsx, .xls) or CSV file</div>
+                        </label>
+                    </div>
+                    <div id="fileNameDisplay"></div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-primary" onclick="analyzeSkills()">
+                        <i class="fas fa-magic"></i> Analyze & Generate Scores
+                    </button>
+                    <button class="modal-btn modal-btn-secondary" onclick="closeBulkMatchingModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Analyzing candidates and generating scores...</p>
+            </div>
+            
+            <!-- Results Container -->
+            <div id="resultsContainer" class="results-container">
+                <h3 style="margin-bottom: 1rem; color: #1a1a2e;">Analysis Results</h3>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Candidate to Job Matching Modal -->
+    <div id="candidateToJobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Match Candidate Profile to Job</h2>
+                <button class="close-btn" onclick="closeCandidateToJobModal()">&times;</button>
+            </div>
+            
+            <!-- Analysis Form -->
+            <div id="candidateAnalysisForm">
+                <div class="form-group">
+                    <label for="jobSkillsInput">
+                        <i class="fas fa-briefcase"></i> Job Required Skills
+                    </label>
+                    <textarea id="jobSkillsInput" placeholder="e.g., Python, React, AWS, Communication, Leadership (comma-separated or line-separated)"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="candidateFile">
+                        <i class="fas fa-file-upload"></i> Upload Candidate Profile (PDF or Word)
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="candidateFile" accept=".pdf,.docx,.doc" onchange="handleCandidateFileUpload(this)">
+                        <label for="candidateFile" class="upload-label">
+                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div>Click to upload or drag and drop</div>
+                            <div style="font-size: 0.85em; color: #999;">PDF or Word Document (.pdf, .docx, .doc)</div>
+                        </label>
+                    </div>
+                    <div id="candidateFileNameDisplay"></div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-primary" onclick="analyzeCandidateProfile()">
+                        <i class="fas fa-magic"></i> Analyze & Match Profile
+                    </button>
+                    <button class="modal-btn modal-btn-secondary" onclick="closeCandidateToJobModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div id="candidateLoading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Analyzing candidate profile and matching with job requirements...</p>
+            </div>
+            
+            <!-- Results Container -->
+            <div id="candidateResultsContainer" class="results-container">
+                <h3 style="margin-bottom: 1rem; color: #1a1a2e;">Profile Match Results</h3>
+                <div id="candidateResultsContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function goBack() {
+            window.location.href = '/TalentPool/hiring-portal/';
+        }
+        
+        function startMatching(matchType) {
+            switch(matchType) {
+                case 'candidate-to-job':
+                    openCandidateToJobModal();
+                    break;
+                case 'job-to-candidate':
+                    alert('💼 Job to Candidate Matching\n\nAnalyzing job opportunities and recommending them to suitable candidates...\n\nThis will recommend positions based on candidate profiles and career goals.');
+                    break;
+                case 'bulk-matching':
+                    openBulkMatchingModal();
+                    break;
+            }
+        }
+        
+        function openBulkMatchingModal() {
+            document.getElementById('bulkMatchingModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeBulkMatchingModal() {
+            document.getElementById('bulkMatchingModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('analysisForm').style.display = 'block';
+            document.getElementById('excelFile').value = '';
+            document.getElementById('fileNameDisplay').innerHTML = '';
+        }
+        
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                document.getElementById('fileNameDisplay').innerHTML = `<div class="uploaded-file"><i class="fas fa-file-excel"></i> ${fileName}</div>`;
+            }
+        }
+        
+        function analyzeSkills() {
+            const skillsInput = document.getElementById('skillsInput').value.trim();
+            const excelFile = document.getElementById('excelFile').files[0];
+            
+            if (!skillsInput) {
+                alert('Please enter the required skills');
+                return;
+            }
+            
+            if (!excelFile) {
+                alert('Please upload an Excel file');
+                return;
+            }
+            
+            if (!excelFile.name.match(/\.(xlsx?|xls|csv)$/)) {
+                alert('Please upload a valid Excel file (.xlsx, .xls, or .csv)');
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('analysisForm').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            
+            const formData = new FormData();
+            formData.append('skills', skillsInput);
+            formData.append('excel_file', excelFile);
+            
+            fetch('/TalentPool/analyze-bulk-matching/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                if (data.success) {
+                    displayResults(data.results, skillsInput);
+                } else {
+                    alert('Error: ' + data.error);
+                    document.getElementById('analysisForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error analyzing file: ' + error);
+                document.getElementById('analysisForm').style.display = 'block';
+            });
+        }
+        
+        function displayResults(results, skills) {
+            const resultsHtml = `
+                <div class="form-group">
+                    <label>Required Skills: <strong>${skills}</strong></label>
+                </div>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Candidate Name</th>
+                            <th>Match Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${results.map(result => {
+                            const scoreClass = result.score >= 70 ? 'score-high' : result.score >= 40 ? 'score-medium' : 'score-low';
+                            return `
+                                <tr>
+                                    <td>${result.name}</td>
+                                    <td><span class="score-badge ${scoreClass}">${result.score}%</span></td>
+                                    <td>${result.status}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+                <button class="modal-btn modal-btn-secondary" style="width: 100%;" onclick="resetAnalysis()">
+                    <i class="fas fa-redo"></i> Analyze Again
+                </button>
+            `;
+            
+            document.getElementById('resultsContent').innerHTML = resultsHtml;
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+        
+        function resetAnalysis() {
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('analysisForm').style.display = 'block';
+            document.getElementById('excelFile').value = '';
+            document.getElementById('skillsInput').value = '';
+            document.getElementById('fileNameDisplay').innerHTML = '';
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        function openCandidateToJobModal() {
+            document.getElementById('candidateToJobModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeCandidateToJobModal() {
+            document.getElementById('candidateToJobModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('candidateResultsContainer').style.display = 'none';
+            document.getElementById('candidateAnalysisForm').style.display = 'block';
+            document.getElementById('candidateFile').value = '';
+            document.getElementById('candidateFileNameDisplay').innerHTML = '';
+        }
+        
+        function handleCandidateFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                document.getElementById('candidateFileNameDisplay').innerHTML = `<div class="uploaded-file"><i class="fas fa-file"></i> ${fileName}</div>`;
+            }
+        }
+        
+        function analyzeCandidateProfile() {
+            const jobSkills = document.getElementById('jobSkillsInput').value.trim();
+            const candidateFile = document.getElementById('candidateFile').files[0];
+            
+            if (!jobSkills) {
+                alert('Please enter the job required skills');
+                return;
+            }
+            
+            if (!candidateFile) {
+                alert('Please upload a candidate profile');
+                return;
+            }
+            
+            if (!candidateFile.name.match(/\.(pdf|docx?|doc)$/)) {
+                alert('Please upload a valid file (.pdf, .docx, or .doc)');
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('candidateAnalysisForm').style.display = 'none';
+            document.getElementById('candidateLoading').style.display = 'block';
+            
+            const formData = new FormData();
+            formData.append('job_skills', jobSkills);
+            formData.append('candidate_file', candidateFile);
+            
+            fetch('/TalentPool/analyze-candidate-profile/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('candidateLoading').style.display = 'none';
+                if (data.success) {
+                    displayCandidateResults(data);
+                } else {
+                    alert('Error: ' + data.error);
+                    document.getElementById('candidateAnalysisForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                document.getElementById('candidateLoading').style.display = 'none';
+                alert('Error analyzing file: ' + error);
+                document.getElementById('candidateAnalysisForm').style.display = 'block';
+            });
+        }
+        
+        function displayCandidateResults(data) {
+            const scoreClass = data.match_score >= 70 ? 'score-high' : data.match_score >= 40 ? 'score-medium' : 'score-low';
+            
+            const resultsHtml = `
+                <div class="form-group">
+                    <label>Job Skills: <strong>${data.job_skills}</strong></label>
+                </div>
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e0f8f5 100%); padding: 2rem; border-radius: 10px; text-align: center; margin-bottom: 1.5rem;">
+                    <div style="font-size: 3em; font-weight: 800; background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">
+                        ${data.match_score}%
+                    </div>
+                    <div style="font-size: 1.2em; font-weight: 700; color: #1a1a2e; margin-bottom: 0.5rem;">${data.status}</div>
+                    <div style="color: #666; font-size: 0.95em;">Overall Profile Match with Job Requirements</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <h4 style="color: #1a1a2e; margin-bottom: 1rem;">Detailed Breakdown</h4>
+                    <div style="color: #555; line-height: 1.8;">
+                        <p><strong>Profile Summary:</strong> ${data.profile_summary}</p>
+                        <p style="margin-top: 0.8rem;"><strong>Matching Skills Found:</strong> ${data.matching_skills}</p>
+                        <p style="margin-top: 0.8rem;"><strong>Missing Skills:</strong> ${data.missing_skills}</p>
+                        <p style="margin-top: 0.8rem;"><strong>Recommendation:</strong> ${data.recommendation}</p>
+                    </div>
+                </div>
+                <button class="modal-btn modal-btn-secondary" style="width: 100%;" onclick="resetCandidateAnalysis()">
+                    <i class="fas fa-redo"></i> Analyze Another Profile
+                </button>
+            `;
+            
+            document.getElementById('candidateResultsContent').innerHTML = resultsHtml;
+            document.getElementById('candidateResultsContainer').style.display = 'block';
+        }
+        
+        function resetCandidateAnalysis() {
+            document.getElementById('candidateResultsContainer').style.display = 'none';
+            document.getElementById('candidateAnalysisForm').style.display = 'block';
+            document.getElementById('candidateFile').value = '';
+            document.getElementById('jobSkillsInput').value = '';
+            document.getElementById('candidateFileNameDisplay').innerHTML = '';
+        }
+        
+        window.onclick = function(event) {
+            const bulkModal = document.getElementById('bulkMatchingModal');
+            if (event.target == bulkModal) {
+                closeBulkMatchingModal();
+            }
+            const candidateModal = document.getElementById('candidateToJobModal');
+            if (event.target == candidateModal) {
+                closeCandidateToJobModal();
+            }
+        }
+    </script>
+</body>
+</html>

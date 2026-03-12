@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Talent - Hiring Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            background: #1a1a2e;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2d2d44;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .navbar-items {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .navbar-items a {
+            color: #b0b0c0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .navbar-items a:hover {
+            color: #00cec9;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header Section */
+        .header-section {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.6s ease-out;
+            border: 1px solid #2d2d44;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-text h1 {
+            color: #00cec9;
+            font-size: 2.2em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-text p {
+            color: #a0a0b0;
+            font-size: 1rem;
+        }
+        
+        .add-job-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+        
+        .add-job-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 184, 148, 0.4);
+        }
+        
+        .add-job-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: slideUp 0.6s ease-out 0.1s backwards;
+            border: 1px solid #2d2d44;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #a0a0b0;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .filter-item input,
+        .filter-item select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #2d2d44;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: #0f0f1e;
+            color: #e0e0e0;
+        }
+        
+        .filter-item input:focus,
+        .filter-item select:focus {
+            outline: none;
+            border-color: #00cec9;
+            box-shadow: 0 0 8px rgba(0, 206, 201, 0.2);
+        }
+        
+        /* Job Listings */
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            animation: slideUp 0.6s ease-out 0.2s backwards;
+        }
+        
+        .job-card {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #2d2d44;
+        }
+        
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00b894 0%, #00cec9 100%);
+            transition: left 0.3s ease;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 206, 201, 0.15);
+        }
+        
+        .job-card:hover::before {
+            left: 0;
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .job-title {
+            font-size: 1.3em;
+            font-weight: 800;
+            color: #00cec9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .company-name {
+            color: #7a7a8a;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .job-status {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            background: rgba(0, 184, 148, 0.15);
+            color: #00cec9;
+        }
+        
+        .job-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem 0;
+            border-top: 1px solid #2d2d44;
+            border-bottom: 1px solid #2d2d44;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a0a0b0;
+            font-size: 0.95em;
+        }
+        
+        .meta-item i {
+            color: #00cec9;
+            font-size: 1.1em;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .job-description {
+            color: #b0b0c0;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95em;
+        }
+        
+        .job-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .skill-tag {
+            background: rgba(0, 206, 201, 0.1);
+            color: #00cec9;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid rgba(0, 206, 201, 0.3);
+        }
+        
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .salary {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #00cec9;
+        }
+        
+        .view-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.3);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: #16213e;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2d2d44;
+        }
+        
+        .empty-state i {
+            font-size: 3em;
+            color: #5a5a6a;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state p {
+            color: #7a7a8a;
+            font-size: 1.05em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-items {
+                gap: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
+            }
+            
+            .header-text h1 {
+                font-size: 1.6em;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+            }
+            
+            .job-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .job-meta {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-leaf"></i> Green Talent
+        </div>
+        <div class="navbar-items">
+            <a href="#dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+       
+            <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+            <button class="logout-btn" onclick="matchEngine()"><i class="fas fa-magic"></i> Match Engine</button>
+            <button class="logout-btn" onclick="goToCandidatePortal()" style="background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%);margin-left:10px;"><i class="fas fa-briefcase"></i> Candidate Portal</button>
+             <button class="logout-btn" id="ai-assist-btn" style="background:linear-gradient(135deg,#764ba2 0%,#667eea 100%);margin-left:10px;"><i class="fas fa-robot"></i> AI Assistance</button>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+           
+        </div>
+    </nav>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>Publishing & Hiring Hub</h1>
+                    <p>Manage job postings, track applications, and hire top talent</p>
+                </div>
+                <button class="add-job-btn" onclick="addNewJob()">
+                    <i class="fas fa-plus"></i> Post New Job
+                </button>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-item">
+                <label for="searchJob">Search Jobs</label>
+                <input type="text" id="searchJob" placeholder="e.g., Software Engineer">
+            </div>
+            <div class="filter-item">
+                <label for="category">Category</label>
+                <select id="category">
+                    <option value="">All Categories</option>
+                    <option value="tech">Technology</option>
+                    <option value="design">Design</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="sales">Sales</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label for="location">Location</label>
+                <select id="location">
+                    <option value="">All Locations</option>
+                    <option value="remote">Remote</option>
+                    <option value="onsite">On-Site</option>
+                    <option value="hybrid">Hybrid</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Job Listings Grid -->
+        <div class="job-grid" id="jobGrid">
+            <!-- Job Card 1 -->
+            <div class="job-card" data-title="Sustainable Software Engineer" data-location="remote" data-category="tech">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">Sustainable Software Engineer</div>
+                        <div class="company-name">Green Talent Inc.</div>
+                    </div>
+                    <span class="job-status">Active</span>
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>San Francisco, CA</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Full-time</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>12 Applications</span>
+                    </div>
+                </div>
+                
+                <div class="job-description">
+                    We're looking for experienced software engineers to join our growing team. Work on innovative projects and make an impact.
+                </div>
+                
+                <div class="job-skills">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">AWS</span>
+                </div>
+                
+                <div class="job-footer">
+                    <span class="salary">$120K - $160K</span>
+                    <button class="view-btn">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Job Card 2 -->
+            <div class="job-card" data-title="Green Cloud Architect" data-location="onsite" data-category="tech">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">Green Cloud Architect</div>
+                        <div class="company-name">Green Talent Inc.</div>
+                    </div>
+                    <span class="job-status">Active</span>
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Remote</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Full-time</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>8 Applications</span>
+                    </div>
+                </div>
+                
+                <div class="job-description">
+                    Design beautiful and functional user experiences for our web and mobile applications. Lead design initiatives.
+                </div>
+                
+                <div class="job-skills">
+                    <span class="skill-tag">Figma</span>
+                    <span class="skill-tag">UI/UX</span>
+                    <span class="skill-tag">Prototyping</span>
+                </div>
+                
+                <div class="job-footer">
+                    <span class="salary">$90K - $130K</span>
+                    <button class="view-btn">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Job Card 3 -->
+            <div class="job-card" data-title="Green DevOps Engineer" data-location="hybrid" data-category="tech">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">Green DevOps Engineer</div>
+                        <div class="company-name">Green Talent Inc.</div>
+                    </div>
+                    <span class="job-status">Active</span>
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>New York, NY</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Full-time</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>15 Applications</span>
+                    </div>
+                </div>
+                
+                <div class="job-description">
+                    Lead product strategy and development. Work with cross-functional teams to deliver world-class products.
+                </div>
+                
+                <div class="job-skills">
+                    <span class="skill-tag">Product Strategy</span>
+                    <span class="skill-tag">Analytics</span>
+                    <span class="skill-tag">Agile</span>
+                </div>
+                
+                <div class="job-footer">
+                    <span class="salary">$130K - $170K</span>
+                    <button class="view-btn">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Job Card 4 -->
+            <div class="job-card" data-title="Data Scientist" data-location="onsite" data-category="tech">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">Data Scientist</div>
+                        <div class="company-name">Green Talent Inc.</div>
+                    </div>
+                    <span class="job-status">Active</span>
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Boston, MA</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Full-time</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>20 Applications</span>
+                    </div>
+                </div>
+                
+                <div class="job-description">
+                    Build machine learning models and data pipelines to solve complex business problems. Work with cutting-edge technologies.
+                </div>
+                
+                <div class="job-skills">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">ML</span>
+                    <span class="skill-tag">SQL</span>
+                </div>
+                
+                <div class="job-footer">
+                    <span class="salary">$110K - $150K</span>
+                    <button class="view-btn">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Job Card 5 -->
+            <div class="job-card" data-title="ESG Data Analyst" data-location="remote" data-category="tech">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">ESG Data Analyst</div>
+                        <div class="company-name">Green Talent Inc.</div>
+                    </div>
+                    <span class="job-status">Active</span>
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Remote</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Full-time</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>10 Applications</span>
+                    </div>
+                </div>
+                
+                <div class="job-description">
+                    Analyze datasets using Python or SQL , Perform advanced data modeling and analysis
+                </div>
+                
+                <div class="job-skills">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">SQL</span>
+                    <span class="skill-tag">Analytics</span>
+                </div>
+                
+                <div class="job-footer">
+                    <span class="salary">$85K - $120K</span>
+                    <button class="view-btn">View Details</button>
+                </div>
+            </div>
+            
+            <!-- Job Card 6 -->
+            <div class="job-card" data-title="DevOps Engineer" data-location="onsite" data-category="tech">
+                <div class="job-header">
+                    <div>
+                        <div class="job-title">DevOps Engineer</div>
+                        <div class="company-name">Green Talent Inc.</div>
+                    </div>
+                    <span class="job-status">Active</span>
+                </div>
+                
+                <div class="job-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Seattle, WA</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Full-time</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>7 Applications</span>
+                    </div>
+                </div>
+                
+                <div class="job-description">
+                    Manage cloud infrastructure and deployment pipelines. Ensure system reliability and performance at scale.
+                </div>
+                
+                <div class="job-skills">
+                    <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Kubernetes</span>
+                    <span class="skill-tag">CI/CD</span>
+                </div>
+                
+                <div class="job-footer">
+                    <span class="salary">$115K - $155K</span>
+                    <button class="view-btn">View Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+                // AI Assistance Chatbot Popup
+                document.addEventListener('DOMContentLoaded', function() {
+                    const aiBtn = document.getElementById('ai-assist-btn');
+                    if (aiBtn) {
+                        aiBtn.addEventListener('click', function() {
+                            showAIPopup();
+                        });
+                    }
+                });
+
+                function showAIPopup() {
+                    if (document.getElementById('ai-popup')) return;
+                    const popup = document.createElement('div');
+                    popup.id = 'ai-popup';
+                    popup.style.position = 'fixed';
+                    popup.style.right = '40px';
+                    popup.style.bottom = '40px';
+                    popup.style.width = '370px';
+                    popup.style.height = '500px';
+                    popup.style.background = '#16213e';
+                    popup.style.borderRadius = '18px';
+                    popup.style.boxShadow = '0 8px 32px rgba(0,206,201,0.25)';
+                    popup.style.zIndex = '9999';
+                    popup.style.display = 'flex';
+                    popup.style.flexDirection = 'column';
+                    popup.style.border = '1px solid #2d2d44';
+                    popup.innerHTML = `
+                        <div style="padding:1rem;background:linear-gradient(135deg,#00b894 0%,#00cec9 100%);color:#fff;border-radius:18px 18px 0 0;display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-weight:700;font-size:1.1em"><i class='fas fa-robot'></i> AI Assistance</span>
+                            <button onclick="document.getElementById('ai-popup').remove()" style="background:none;border:none;color:#fff;font-size:1.3em;cursor:pointer;">&times;</button>
+                        </div>
+                        <div id="ai-chat-messages" style="flex:1;overflow-y:auto;padding:1rem;background:#0f0f1e;"></div>
+                        <form id="ai-chat-form" style="display:flex;padding:1rem;border-top:1px solid #2d2d44;gap:0.5rem;">
+                            <input id="ai-chat-input" type="text" placeholder="Ask me anything..." style="flex:1;padding:0.7rem;border-radius:8px;border:1px solid #2d2d44;font-size:1em;background:#1a1a2e;color:#e0e0e0;" autocomplete="off" />
+                            <button type="submit" style="background:linear-gradient(135deg,#00b894 0%,#00cec9 100%);color:#fff;border:none;padding:0.7rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;">Send</button>
+                        </form>
+                    `;
+                    document.body.appendChild(popup);
+                    const form = document.getElementById('ai-chat-form');
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const input = document.getElementById('ai-chat-input');
+                        const msg = input.value.trim();
+                        if (!msg) return;
+                        
+                        // Clear input
+                        input.value = '';
+                        
+                        // Add user message
+                        appendAIMsg('user', msg);
+                        
+                        // Show thinking indicator
+                        appendAIMsg('assistant', '<span style="color:#a0a0b0;font-style:italic;">Thinking...</span>');
+                        
+                        try {
+                            const resp = await fetch('/TalentPool/ai-assist/', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ question: msg })
+                            });
+                            const data = await resp.json();
+                            
+                            // Get the last "Thinking..." message and replace it
+                            const messages = document.querySelectorAll('#ai-chat-messages .assistant');
+                            const lastMsg = messages[messages.length - 1];
+                            
+                            // Handle both new format (with success flag) and legacy format
+                            const answer = data.answer || (data.success === false ? 'Unable to get a response' : 'No response');
+                            lastMsg.innerHTML = `<span style="display:inline-block;max-width:80%;padding:0.6em 1em;border-radius:12px;background:#1a1a2e;color:#e0e0e0;border:1px solid #2d2d44;">${answer}</span>`;
+                        } catch (err) {
+                            const messages = document.querySelectorAll('#ai-chat-messages .assistant');
+                            const lastMsg = messages[messages.length - 1];
+                            lastMsg.innerHTML = `<span style="display:inline-block;max-width:80%;padding:0.6em 1em;border-radius:12px;background:#1a1a2e;color:#ff6b6b;border:1px solid #2d2d44;">Error: Unable to reach the service</span>`;
+                        }
+                    });
+                }
+
+                function appendAIMsg(role, text) {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = role;
+                    msgDiv.style.margin = '0.5em 0';
+                    msgDiv.style.textAlign = role === 'user' ? 'right' : 'left';
+                    const bgColor = role === 'user' ? 'linear-gradient(135deg,#00b894 0%,#00cec9 100%)' : '#1a1a2e';
+                    const textColor = role === 'user' ? '#fff' : '#e0e0e0';
+                    const borderStyle = role === 'user' ? '' : 'border:1px solid #2d2d44;';
+                    msgDiv.innerHTML = `<span style="display:inline-block;max-width:80%;padding:0.6em 1em;border-radius:12px;background:${bgColor};color:${textColor};${borderStyle}">${text}</span>`;
+                    document.getElementById('ai-chat-messages').appendChild(msgDiv);
+                    document.getElementById('ai-chat-messages').scrollTop = 99999;
+                }
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchJob');
+            const categorySelect = document.getElementById('category');
+            const locationSelect = document.getElementById('location');
+            
+            // Add event listeners for filtering
+            searchInput.addEventListener('keyup', filterJobs);
+            categorySelect.addEventListener('change', filterJobs);
+            locationSelect.addEventListener('change', filterJobs);
+        });
+        
+        function filterJobs() {
+            const searchValue = document.getElementById('searchJob').value.toLowerCase();
+            const categoryValue = document.getElementById('category').value;
+            const locationValue = document.getElementById('location').value;
+            const jobCards = document.querySelectorAll('.job-card');
+            let visibleCount = 0;
+            
+            jobCards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                const category = card.getAttribute('data-category');
+                const location = card.getAttribute('data-location');
+                
+                // Check if card matches all filters
+                const matchesSearch = title.includes(searchValue) || searchValue === '';
+                const matchesCategory = categoryValue === '' || category === categoryValue;
+                const matchesLocation = locationValue === '' || location === locationValue;
+                
+                if (matchesSearch && matchesCategory && matchesLocation) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.5s ease-out';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show empty state if no jobs found
+            const jobGrid = document.getElementById('jobGrid');
+            let emptyState = document.getElementById('empty-state');
+            
+            if (visibleCount === 0) {
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.id = 'empty-state';
+                    emptyState.className = 'empty-state';
+                    emptyState.innerHTML = '<i class="fas fa-search"></i><p>No jobs found matching your criteria. Try adjusting your filters.</p>';
+                    jobGrid.appendChild(emptyState);
+                }
+                emptyState.style.display = 'block';
+            } else {
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+            }
+        }
+        
+        function addNewJob() {
+            alert('Redirecting to job creation form...');
+            // window.location.href = '/TalentPool/create-job/';
+        }
+        
+        function matchEngine() {
+            window.location.href = '/TalentPool/match-engine/';
+        }
+        
+        function goToCandidatePortal() {
+            window.location.href = '/TalentPool/candidate-portal/';
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/TalentPool/home/';
+            }
+        }
+    </script>
+</body>
+</html>
