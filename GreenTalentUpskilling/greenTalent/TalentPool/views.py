@@ -273,6 +273,479 @@ def load_candidates_from_json():
 
 
 # ============================================================================
+# RANKED CANDIDATE SHORTLIST & LEARNING PLAN FEATURES
+# ============================================================================
+
+def get_role_candidates_ranked(request, role=None):
+    """
+    Get ranked candidates for a specific role with match scores and rationale
+    """
+    try:
+        # Define common roles and their required skills
+        ROLE_REQUIREMENTS = {
+            'Cloud Efficiency Engineer': {
+                'required_skills': ['Cloud Cost Optimization', 'Performance Monitoring', 'FinOps', 'AWS', 'Azure'],
+                'key_skills': ['Cloud Cost Optimization', 'Performance Monitoring'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Green DevOps Engineer': {
+                'required_skills': ['CI/CD Pipelines', 'Docker', 'Kubernetes', 'Container Optimization', 'Infrastructure Monitoring'],
+                'key_skills': ['CI/CD Pipelines', 'Docker', 'Container Optimization'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Sustainable Software Engineer': {
+                'required_skills': ['Algorithm Optimization', 'Energy Efficient Coding', 'Python', 'Performance Optimization'],
+                'key_skills': ['Algorithm Optimization', 'Energy Efficient Coding'],
+                'proficiency_level': 'Intermediate'
+            },
+            'ESG Data Analyst': {
+                'required_skills': ['Data Analytics', 'ESG Reporting', 'SQL', 'Python', 'Tableau', 'Power BI'],
+                'key_skills': ['Data Analytics', 'ESG Reporting', 'SQL'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Green IT Specialist': {
+                'required_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure', 'IT Governance', 'Infrastructure Monitoring'],
+                'key_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure'],
+                'proficiency_level': 'Intermediate'
+            }
+        }
+
+        if not role:
+            role = request.GET.get('role', 'Cloud Efficiency Engineer')
+
+        role_req = ROLE_REQUIREMENTS.get(role, ROLE_REQUIREMENTS['Cloud Efficiency Engineer'])
+        candidates = Candidate.objects.all()
+
+        ranked_candidates = []
+
+        for candidate in candidates:
+            # Get candidate skills from skill_vectors
+            candidate_skills = []
+            if candidate.skill_vectors:
+                candidate_skills = [s.get('skill', '').lower() for s in candidate.skill_vectors]
+
+            # Calculate matched skills
+            matched_skills = []
+            missing_skills = []
+
+            for req_skill in role_req['required_skills']:
+                found = False
+                for cand_skill in candidate_skills:
+                    if req_skill.lower() in cand_skill or cand_skill in req_skill.lower():
+                        matched_skills.append(req_skill)
+                        found = True
+                        break
+                if not found:
+                    missing_skills.append(req_skill)
+
+            # Calculate match score (0-100)
+            if len(role_req['required_skills']) > 0:
+                match_score = (len(matched_skills) / len(role_req['required_skills'])) * 100
+            else:
+                match_score = 0
+
+            # Get proficiency level bonus
+            prof_bonus = 0
+            if candidate.proficiency_level and candidate.proficiency_level.lower() == 'expert':
+                prof_bonus = 10
+            elif candidate.proficiency_level and candidate.proficiency_level.lower() == 'advanced':
+                prof_bonus = 5
+
+            final_score = min(100, match_score + prof_bonus)
+
+            ranked_candidates.append({
+                'candidate_name': candidate.candidate_name,
+                'email': candidate.email,
+                'phone': candidate.phone,
+                'current_role': candidate.current_role,
+                'grade': candidate.grade,
+                'employment_type': candidate.employment_type,
+                'match_score': round(final_score, 1),
+                'matched_skills': matched_skills,
+                'missing_skills': missing_skills,
+                'proficiency_level': candidate.proficiency_level,
+                'skill_vectors': candidate.skill_vectors or []
+            })
+
+        # Sort by match score descending
+        ranked_candidates.sort(key=lambda x: x['match_score'], reverse=True)
+
+        # Get available roles
+        available_roles = list(ROLE_REQUIREMENTS.keys())
+
+        context = {
+            'ranked_candidates': ranked_candidates,
+            'selected_role': role,
+            'available_roles': available_roles,
+            'top_candidates': ranked_candidates[:10]  # Top 10 candidates
+        }
+
+        return render(request, 'candidate_shortlist.html', context)
+
+    except Exception as e:
+        print(f"Error in get_role_candidates_ranked: {e}")
+        import traceback
+        traceback.print_exc()
+        return render(request, 'candidate_shortlist.html', {'error': str(e)})
+
+
+@csrf_exempt
+def get_candidate_learning_plan(request):
+    """
+    Generate learning plan for a candidate based on role requirements
+    """
+    try:
+        role = request.GET.get('role', 'Cloud Efficiency Engineer')
+        candidate_name = request.GET.get('candidate_name', '')
+
+        if not candidate_name:
+            return JsonResponse({'success': False, 'error': 'Candidate name required'})
+
+        # Get candidate from DB
+        try:
+            candidate = Candidate.objects.get(candidate_name=candidate_name)
+        except Candidate.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Candidate not found'})
+
+        # Role requirements
+        ROLE_REQUIREMENTS = {
+            'Cloud Efficiency Engineer': {
+                'required_skills': ['Cloud Cost Optimization', 'Performance Monitoring', 'FinOps', 'AWS', 'Azure'],
+                'proficiency_levels': {'Cloud Cost Optimization': 'Expert', 'Performance Monitoring': 'Intermediate', 'FinOps': 'Intermediate'}
+            },
+            'Green DevOps Engineer': {
+                'required_skills': ['CI/CD Pipelines', 'Docker', 'Kubernetes', 'Container Optimization'],
+                'proficiency_levels': {'CI/CD Pipelines': 'Expert', 'Docker': 'Expert', 'Container Optimization': 'Intermediate'}
+            },
+            'Sustainable Software Engineer': {
+                'required_skills': ['Algorithm Optimization', 'Energy Efficient Coding', 'Python'],
+                'proficiency_levels': {'Algorithm Optimization': 'Expert', 'Energy Efficient Coding': 'Intermediate', 'Python': 'Expert'}
+            },
+            'ESG Data Analyst': {
+                'required_skills': ['Data Analytics', 'ESG Reporting', 'SQL', 'Python'],
+                'proficiency_levels': {'Data Analytics': 'Expert', 'ESG Reporting': 'Intermediate', 'SQL': 'Intermediate'}
+            },
+            'Green IT Specialist': {
+                'required_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure', 'IT Governance'],
+                'proficiency_levels': {'Sustainable IT Practices': 'Expert', 'Energy Efficient Infrastructure': 'Intermediate', 'IT Governance': 'Basic'}
+            }
+        }
+
+        role_req = ROLE_REQUIREMENTS.get(role, ROLE_REQUIREMENTS['Cloud Efficiency Engineer'])
+
+        # Get candidate current skills
+        current_skills = {}
+        if candidate.skill_vectors:
+            for skill in candidate.skill_vectors:
+                current_skills[skill.get('skill', '')] = {
+                    'proficiency': skill.get('proficiency_level', 'Basic'),
+                    'score': skill.get('skill_level_score', 0)
+                }
+
+        # Build learning plan
+        learning_plan = []
+        gap_count = 0
+
+        for req_skill in role_req['required_skills']:
+            required_prof = role_req['proficiency_levels'].get(req_skill, 'Intermediate')
+
+            if req_skill in current_skills:
+                current_prof = current_skills[req_skill]['proficiency']
+                current_score = current_skills[req_skill]['score']
+
+                # Check if proficiency needs improvement
+                prof_levels = {'Basic': 1, 'Intermediate': 2, 'Advanced': 3, 'Expert': 4}
+                req_level = prof_levels.get(required_prof, 2)
+                curr_level = prof_levels.get(current_prof, 1)
+
+                if curr_level < req_level:
+                    gap_count += 1
+                    learning_plan.append({
+                        'skill': req_skill,
+                        'status': 'improvement_needed',
+                        'current_level': current_prof,
+                        'required_level': required_prof,
+                        'current_score': current_score,
+                        'gap': req_level - curr_level,
+                        'duration': f'{(req_level - curr_level) * 2}-{(req_level - curr_level) * 4} weeks'
+                    })
+                else:
+                    learning_plan.append({
+                        'skill': req_skill,
+                        'status': 'proficient',
+                        'current_level': current_prof,
+                        'required_level': required_prof,
+                        'current_score': current_score,
+                        'gap': 0,
+                        'duration': 'Ready'
+                    })
+            else:
+                gap_count += 1
+                learning_plan.append({
+                    'skill': req_skill,
+                    'status': 'new_skill',
+                    'current_level': 'None',
+                    'required_level': required_prof,
+                    'current_score': 0,
+                    'gap': 3,
+                    'duration': '8-12 weeks'
+                })
+
+        # Calculate readiness percentage
+        readiness = ((len(learning_plan) - gap_count) / len(learning_plan)) * 100 if learning_plan else 0
+
+        result = {
+            'success': True,
+            'candidate_name': candidate.candidate_name,
+            'role': role,
+            'current_role': candidate.current_role,
+            'email': candidate.email,
+            'readiness_percentage': round(readiness, 1),
+            'learning_plan': learning_plan,
+            'gap_count': gap_count,
+            'total_skills': len(learning_plan)
+        }
+
+        return JsonResponse(result)
+
+    except Exception as e:
+        print(f"Error in get_candidate_learning_plan: {e}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+def get_role_candidates_popup(request):
+    """
+    Get candidates for a specific role to display in popup modal
+    """
+    try:
+        role = request.GET.get('role', '')
+        if not role:
+            return JsonResponse({'success': False, 'error': 'No role specified'})
+
+        # Define common roles and their required skills
+        ROLE_REQUIREMENTS = {
+            'Cloud Efficiency Engineer': {
+                'required_skills': ['Cloud Cost Optimization', 'Performance Monitoring', 'FinOps', 'AWS', 'Azure'],
+                'key_skills': ['Cloud Cost Optimization', 'Performance Monitoring'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Green Cloud Architect': {
+                'required_skills': ['Cloud Architecture', 'Cloud Security', 'Cost Optimization', 'AWS', 'Azure', 'GCP'],
+                'key_skills': ['Cloud Architecture', 'Cloud Security', 'Cost Optimization'],
+                'proficiency_level': 'Advanced'
+            },
+            'Green DevOps Engineer': {
+                'required_skills': ['CI/CD Pipelines', 'Docker', 'Kubernetes', 'Container Optimization', 'Infrastructure Monitoring'],
+                'key_skills': ['CI/CD Pipelines', 'Docker', 'Container Optimization'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Sustainable Software Engineer': {
+                'required_skills': ['Algorithm Optimization', 'Energy Efficient Coding', 'Python', 'Performance Optimization'],
+                'key_skills': ['Algorithm Optimization', 'Energy Efficient Coding'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Data Scientist': {
+                'required_skills': ['Python', 'Machine Learning', 'SQL', 'Data Analysis', 'Statistics', 'Pandas', 'NumPy'],
+                'key_skills': ['Python', 'Machine Learning', 'SQL'],
+                'proficiency_level': 'Intermediate'
+            },
+            'ESG Data Analyst': {
+                'required_skills': ['Data Analytics', 'ESG Reporting', 'SQL', 'Python', 'Tableau', 'Power BI'],
+                'key_skills': ['Data Analytics', 'ESG Reporting', 'SQL'],
+                'proficiency_level': 'Intermediate'
+            },
+            'DevOps Engineer': {
+                'required_skills': ['CI/CD', 'Docker', 'Kubernetes', 'Jenkins', 'Git', 'Linux', 'AWS'],
+                'key_skills': ['CI/CD', 'Docker', 'Kubernetes'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Green IT Specialist': {
+                'required_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure', 'IT Governance', 'Infrastructure Monitoring'],
+                'key_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure'],
+                'proficiency_level': 'Intermediate'
+            }
+        }
+
+        role_req = ROLE_REQUIREMENTS.get(role)
+        if not role_req:
+            return JsonResponse({'success': False, 'error': f'Role "{role}" not found'})
+
+        candidates = Candidate.objects.all()
+        matching_candidates = []
+
+        for candidate in candidates:
+            # Get candidate skills from skill_vectors
+            candidate_skills = []
+            if candidate.skill_vectors:
+                candidate_skills = [s.get('skill', '').lower() for s in candidate.skill_vectors]
+
+            # Calculate matched skills
+            matched_skills = []
+            for req_skill in role_req['required_skills']:
+                for cand_skill in candidate_skills:
+                    if req_skill.lower() in cand_skill or cand_skill in req_skill.lower():
+                        matched_skills.append(req_skill)
+                        break
+
+            # Only include candidates with at least one matching skill
+            if matched_skills:
+                # Calculate match score
+                match_score = (len(matched_skills) / len(role_req['required_skills'])) * 100
+
+                matching_candidates.append({
+                    'id': candidate.id,
+                    'name': candidate.candidate_name,
+                    'current_role': candidate.current_role or 'N/A',
+                    'proficiency_level': candidate.proficiency_level or 'Intermediate',
+                    'email': candidate.email or 'N/A',
+                    'phone': candidate.phone or 'N/A',
+                    'matched_skills': matched_skills,
+                    'match_score': round(match_score, 1),
+                    'total_required_skills': len(role_req['required_skills'])
+                })
+
+        # Sort by match score (highest first)
+        matching_candidates.sort(key=lambda x: x['match_score'], reverse=True)
+
+        return JsonResponse({
+            'success': True,
+            'role': role,
+            'required_skills': role_req['required_skills'],
+            'candidates': matching_candidates,
+            'total_candidates': len(matching_candidates)
+        })
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+def export_candidates_csv(request):
+    """
+    Export ranked candidates for a specific role to CSV format
+    """
+    try:
+        import csv
+        from django.http import HttpResponse
+
+        role = request.GET.get('role', 'Cloud Efficiency Engineer')
+
+        # Define common roles and their required skills
+        ROLE_REQUIREMENTS = {
+            'Cloud Efficiency Engineer': {
+                'required_skills': ['Cloud Cost Optimization', 'Performance Monitoring', 'FinOps', 'AWS', 'Azure'],
+                'key_skills': ['Cloud Cost Optimization', 'Performance Monitoring'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Green Cloud Architect': {
+                'required_skills': ['Cloud Architecture', 'Cloud Security', 'Cost Optimization', 'AWS', 'Azure', 'GCP'],
+                'key_skills': ['Cloud Architecture', 'Cloud Security', 'Cost Optimization'],
+                'proficiency_level': 'Advanced'
+            },
+            'Green DevOps Engineer': {
+                'required_skills': ['CI/CD Pipelines', 'Docker', 'Kubernetes', 'Container Optimization', 'Infrastructure Monitoring'],
+                'key_skills': ['CI/CD Pipelines', 'Docker', 'Container Optimization'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Sustainable Software Engineer': {
+                'required_skills': ['Algorithm Optimization', 'Energy Efficient Coding', 'Python', 'Performance Optimization'],
+                'key_skills': ['Algorithm Optimization', 'Energy Efficient Coding'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Data Scientist': {
+                'required_skills': ['Python', 'Machine Learning', 'SQL', 'Data Analysis', 'Statistics', 'Pandas', 'NumPy'],
+                'key_skills': ['Python', 'Machine Learning', 'SQL'],
+                'proficiency_level': 'Intermediate'
+            },
+            'ESG Data Analyst': {
+                'required_skills': ['Data Analytics', 'ESG Reporting', 'SQL', 'Python', 'Tableau', 'Power BI'],
+                'key_skills': ['Data Analytics', 'ESG Reporting', 'SQL'],
+                'proficiency_level': 'Intermediate'
+            },
+            'DevOps Engineer': {
+                'required_skills': ['CI/CD', 'Docker', 'Kubernetes', 'Jenkins', 'Git', 'Linux', 'AWS'],
+                'key_skills': ['CI/CD', 'Docker', 'Kubernetes'],
+                'proficiency_level': 'Intermediate'
+            },
+            'Green IT Specialist': {
+                'required_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure', 'IT Governance', 'Infrastructure Monitoring'],
+                'key_skills': ['Sustainable IT Practices', 'Energy Efficient Infrastructure'],
+                'proficiency_level': 'Intermediate'
+            }
+        }
+
+        role_req = ROLE_REQUIREMENTS.get(role, ROLE_REQUIREMENTS['Cloud Efficiency Engineer'])
+        candidates = Candidate.objects.all()
+
+        # Create the HttpResponse object with CSV header
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="candidates_{role.replace(" ", "_")}.csv"'
+
+        writer = csv.writer(response)
+        # Write header row
+        writer.writerow([
+            'Rank', 'Candidate Name', 'Current Role', 'Proficiency Level',
+            'Match Score (%)', 'Matched Skills', 'Missing Skills',
+            'Email', 'Phone', 'Grade', 'Employment Type'
+        ])
+
+        rank = 1
+        for candidate in candidates:
+            # Get candidate skills from skill_vectors
+            candidate_skills = []
+            if candidate.skill_vectors:
+                candidate_skills = [s.get('skill', '').lower() for s in candidate.skill_vectors]
+
+            # Calculate matched skills
+            matched_skills = []
+            missing_skills = []
+
+            for req_skill in role_req['required_skills']:
+                found = False
+                for cand_skill in candidate_skills:
+                    if req_skill.lower() in cand_skill or cand_skill in req_skill.lower():
+                        matched_skills.append(req_skill)
+                        found = True
+                        break
+                if not found:
+                    missing_skills.append(req_skill)
+
+            # Calculate match score (0-100)
+            if len(role_req['required_skills']) > 0:
+                match_score = (len(matched_skills) / len(role_req['required_skills'])) * 100
+            else:
+                match_score = 0
+
+            # Only include candidates with some matching skills
+            if matched_skills:
+                writer.writerow([
+                    rank,
+                    candidate.candidate_name,
+                    candidate.current_role or 'N/A',
+                    candidate.proficiency_level or 'Intermediate',
+                    f"{match_score:.1f}",
+                    '; '.join(matched_skills),
+                    '; '.join(missing_skills),
+                    candidate.email or 'N/A',
+                    candidate.phone or 'N/A',
+                    candidate.grade or 'N/A',
+                    candidate.employment_type or 'N/A'
+                ])
+                rank += 1
+
+        return response
+
+    except Exception as e:
+        # Return error as CSV
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="error.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Error', str(e)])
+        return response
+
+
+# ============================================================================
 # CANDIDATE-JOB MATCHING & ANALYSIS FUNCTIONS
 # ============================================================================
 

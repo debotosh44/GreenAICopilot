@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Shortlist - Green Skill Talent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: #1a1a2e;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2d2d44;
+        }
+
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        .navbar-items {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .header-section {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-text h1 {
+            color: #00cec9;
+            font-size: 2.2em;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text p {
+            color: #b0b0c0;
+            font-size: 1em;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.4);
+        }
+
+        .export-btn:active {
+            transform: translateY(0);
+        }
+
+        .export-btn i {
+            font-size: 0.9em;
+        }
+
+        /* Role Selection */
+        .role-selection {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .role-selector label {
+            color: #00cec9;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .role-selector select {
+            padding: 0.8rem 1.2rem;
+            border: 2px solid #3d4d66;
+            border-radius: 8px;
+            background: #16213e;
+            color: #e0e0e0;
+            font-size: 1em;
+            min-width: 250px;
+        }
+
+        .role-selector select:focus {
+            outline: none;
+            border-color: #00cec9;
+            box-shadow: 0 0 10px rgba(0, 206, 201, 0.3);
+        }
+
+        /* Candidates Table */
+        .candidates-section {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3d4d66;
+            overflow-x: auto;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #00cec9;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .candidates-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+
+        .candidates-table thead {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .candidates-table th {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 2px solid #00b894;
+            font-weight: 700;
+        }
+
+        .candidates-table tbody tr {
+            border-bottom: 1px solid #3d4d66;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .candidates-table tbody tr:hover {
+            background: rgba(0, 206, 201, 0.15);
+            transform: translateX(8px);
+            box-shadow: -4px 0 12px rgba(0, 206, 201, 0.2);
+        }
+
+        .candidates-table td {
+            padding: 1.1rem 1.2rem;
+            color: #e0e0e0;
+        }
+
+        /* Match Score */
+        .match-score {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .score-high { color: #4caf50; }
+        .score-medium { color: #ff9800; }
+        .score-low { color: #f44336; }
+
+        /* Skills Display */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-matched {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.85em;
+            border: 1px solid #4caf50;
+        }
+
+        .skill-missing {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.85em;
+            border: 1px solid #f44336;
+        }
+
+        /* Learning Plan Button */
+        .learning-plan-btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .learning-plan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            margin: 5% auto;
+            padding: 2.5rem;
+            border: 2px solid #00cec9;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(0, 206, 201, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        .close-modal {
+            color: #00cec9;
+            float: right;
+            font-size: 2.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .learning-plan-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .readiness-score {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #00cec9;
+            margin: 1rem 0;
+        }
+
+        .learning-plan-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .skill-item {
+            background: rgba(0, 206, 201, 0.05);
+            border-left: 4px solid #00cec9;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .skill-item.proficient {
+            border-left-color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .skill-item.needs-improvement {
+            border-left-color: #ff9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .skill-item.new-skill {
+            border-left-color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .skill-name {
+            font-weight: 700;
+            color: #00cec9;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-level {
+            font-size: 0.9em;
+            color: #b0b0c0;
+        }
+
+        .skill-duration {
+            font-weight: 600;
+            color: #ff6b35;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .candidates-table {
+                font-size: 0.9em;
+            }
+
+            .role-selector {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .role-selector select {
+                width: 100%;
+            }
+
+            .skill-details {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand" onclick="goHome()">
+            <i class="fas fa-brain"></i> Green Skill Talent
+        </div>
+        <div class="navbar-items">
+            <button class="back-btn" onclick="goToCandidatePortal()">
+                <i class="fas fa-arrow-left"></i> Back to Portal
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-text">
+                <h1><i class="fas fa-trophy"></i> Ranked Candidate Shortlist</h1>
+                <p>Find the best candidates for each role with detailed skill matching analysis</p>
+            </div>
+            <div class="header-actions">
+                <button class="export-btn" onclick="exportCandidates()">
+                    <i class="fas fa-download"></i> Export to CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="role-selection">
+            <div class="role-selector">
+                <label for="roleSelect"><i class="fas fa-briefcase"></i> Select Role:</label>
+                <select id="roleSelect" onchange="changeRole()">
+                    {% for role in available_roles %}
+                    <option value="{{ role }}" {% if role == selected_role %}selected{% endif %}>{{ role }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Candidates Table -->
+        <div class="candidates-section">
+            <div class="section-title">
+                <i class="fas fa-users"></i> Top Candidates for {{ selected_role }}
+                <span style="margin-left: auto; font-size: 0.9em; color: #b0b0c0;">
+                    ({{ top_candidates|length }} candidates ranked)
+                </span>
+            </div>
+
+            <table class="candidates-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Candidate Name</th>
+                        <th>Current Role</th>
+                        <th>Match Score</th>
+                        <th>Matched Skills</th>
+                        <th>Missing Skills</th>
+                        <th>Learning Plan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for candidate in ranked_candidates %}
+                    <tr>
+                        <td style="font-weight: 700; color: #00cec9;">#{{ forloop.counter }}</td>
+                        <td>{{ candidate.candidate_name }}</td>
+                        <td>{{ candidate.current_role }}</td>
+                        <td>
+                            <span class="match-score {% if candidate.match_score >= 70 %}score-high{% elif candidate.match_score >= 40 %}score-medium{% else %}score-low{% endif %}">
+                                {{ candidate.match_score }}%
+                            </span>
+                        </td>
+                        <td>
+                            <div class="skills-list">
+                                {% for skill in candidate.matched_skills %}
+                                <span class="skill-matched">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="skills-list">
+                                {% for skill in candidate.missing_skills %}
+                                <span class="skill-missing">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <button class="learning-plan-btn" onclick="showLearningPlan('{{ candidate.candidate_name|escapejs }}', '{{ selected_role|escapejs }}')">
+                                <i class="fas fa-graduation-cap"></i> View Plan
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            <i class="fas fa-exclamation-triangle"></i> {{ error }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Learning Plan Modal -->
+    <div id="learningPlanModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeLearningPlan()">&times;</span>
+            <div class="learning-plan-header">
+                <h2 style="color: #00cec9; margin-bottom: 0.5rem;">
+                    <i class="fas fa-graduation-cap"></i> Learning Plan
+                </h2>
+                <div id="candidateInfo" style="color: #b0b0c0; font-size: 0.9em;"></div>
+                <div class="readiness-score" id="readinessScore">0%</div>
+                <div style="color: #b0b0c0;">Role Readiness</div>
+            </div>
+
+            <div id="learningPlanContent">
+                <div style="text-align: center; color: #b0b0c0;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading learning plan...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = '/TalentPool/home/';
+        }
+
+        function goToCandidatePortal() {
+            window.location.href = '/TalentPool/candidate-portal/';
+        }
+
+        function changeRole() {
+            const role = document.getElementById('roleSelect').value;
+            window.location.href = `/TalentPool/candidate-shortlist/?role=${encodeURIComponent(role)}`;
+        }
+
+        function showLearningPlan(candidateName, role) {
+            const modal = document.getElementById('learningPlanModal');
+            const content = document.getElementById('learningPlanContent');
+            const candidateInfo = document.getElementById('candidateInfo');
+
+            modal.style.display = 'block';
+            content.innerHTML = '<div style="text-align: center; color: #b0b0c0;"><i class="fas fa-spinner fa-spin"></i> Loading learning plan...</div>';
+
+            // Fetch learning plan data
+            fetch(`/TalentPool/candidate-learning-plan/?candidate_name=${encodeURIComponent(candidateName)}&role=${encodeURIComponent(role)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        candidateInfo.innerHTML = `${data.candidate_name} → ${data.role}`;
+                        document.getElementById('readinessScore').textContent = `${data.readiness_percentage}%`;
+
+                        let html = '<div class="learning-plan-grid">';
+
+                        data.learning_plan.forEach(skill => {
+                            const statusClass = skill.status === 'proficient' ? 'proficient' :
+                                              skill.status === 'improvement_needed' ? 'needs-improvement' : 'new-skill';
+
+                            html += `
+                                <div class="skill-item ${statusClass}">
+                                    <div class="skill-name">${skill.skill}</div>
+                                    <div class="skill-details">
+                                        <div class="skill-level">
+                                            Current: ${skill.current_level} → Required: ${skill.required_level}
+                                        </div>
+                                        <div class="skill-duration">
+                                            ${skill.duration}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        html += '</div>';
+                        content.innerHTML = html;
+                    } else {
+                        content.innerHTML = `<div style="color: #f44336; text-align: center;">${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    content.innerHTML = '<div style="color: #f44336; text-align: center;">Error loading learning plan</div>';
+                    console.error('Error:', error);
+                });
+        }
+
+        function closeLearningPlan() {
+            document.getElementById('learningPlanModal').style.display = 'none';
+        }
+
+        function exportCandidates() {
+            const roleSelect = document.getElementById('roleSelect');
+            const selectedRole = roleSelect.value;
+            
+            // Create a temporary link to download the CSV
+            const link = document.createElement('a');
+            link.href = `/TalentPool/export-candidates/?role=${encodeURIComponent(selectedRole)}`;
+            link.download = `candidates_${selectedRole.replace(/\s+/g, '_')}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('learningPlanModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -408,6 +408,184 @@
                 gap: 0.8rem;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            margin: 5% auto;
+            padding: 0;
+            border: 1px solid #2d2d44;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            font-size: 2em;
+            cursor: pointer;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #1a1a2e;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: #a0a0b0;
+        }
+
+        .spinner {
+            border: 4px solid #2d2d44;
+            border-top: 4px solid #00cec9;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .candidates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .candidate-card {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .candidate-card:hover {
+            border-color: #00cec9;
+            box-shadow: 0 5px 15px rgba(0, 206, 201, 0.2);
+        }
+
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .candidate-name {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #00cec9;
+        }
+
+        .match-score {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .candidate-info {
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+            font-size: 0.9em;
+        }
+
+        .info-item strong {
+            color: #a0a0b0;
+        }
+
+        .matched-skills-section {
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .matched-skill {
+            background: rgba(0, 206, 201, 0.2);
+            color: #00cec9;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8em;
+            border: 1px solid #00cec9;
+        }
+
+        .no-candidates {
+            text-align: center;
+            color: #a0a0b0;
+            padding: 3rem;
+            font-style: italic;
+        }
+
+        .error-message {
+            text-align: center;
+            color: #ff6b6b;
+            padding: 2rem;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            border: 1px solid #ff6b6b;
+        }
     </style>
 </head>
 <body>
@@ -419,7 +597,7 @@
         <div class="navbar-items">
             <a href="#dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
        
-            <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+            
             <button class="logout-btn" onclick="matchEngine()"><i class="fas fa-magic"></i> Match Engine</button>
             <button class="logout-btn" onclick="goToCandidatePortal()" style="background:linear-gradient(135deg,#2ecc71 0%,#27ae60 100%);margin-left:10px;"><i class="fas fa-briefcase"></i> Candidate Portal</button>
              <button class="logout-btn" id="ai-assist-btn" style="background:linear-gradient(135deg,#764ba2 0%,#667eea 100%);margin-left:10px;"><i class="fas fa-robot"></i> AI Assistance</button>
@@ -485,7 +663,7 @@
                 <div class="job-meta">
                     <div class="meta-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>San Francisco, CA</span>
+                        <span>On-Site</span>
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-briefcase"></i>
@@ -493,12 +671,12 @@
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-users"></i>
-                        <span>12 Applications</span>
+                        <span>7 Profiles</span>
                     </div>
                 </div>
                 
                 <div class="job-description">
-                    We're looking for experienced software engineers to join our growing team. Work on innovative projects and make an impact.
+                 Build predictive sustainability models ,Design efficient large-scale computing algorithms
                 </div>
                 
                 <div class="job-skills">
@@ -508,8 +686,8 @@
                 </div>
                 
                 <div class="job-footer">
-                    <span class="salary">$120K - $160K</span>
-                    <button class="view-btn">View Details</button>
+                 
+                    <button class="view-btn" onclick="viewRoleDetails('Sustainable Software Engineer')">View Details</button>
                 </div>
             </div>
             
@@ -534,23 +712,23 @@
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-users"></i>
-                        <span>8 Applications</span>
+                        <span>4 Profiles</span>
                     </div>
                 </div>
                 
                 <div class="job-description">
-                    Design beautiful and functional user experiences for our web and mobile applications. Lead design initiatives.
+                   Cloud Cost Optimization , Cloud Security and Compliance
                 </div>
                 
                 <div class="job-skills">
-                    <span class="skill-tag">Figma</span>
-                    <span class="skill-tag">UI/UX</span>
-                    <span class="skill-tag">Prototyping</span>
+                    <span class="skill-tag">Azure</span>
+                    <span class="skill-tag">GCP</span>
+                    <span class="skill-tag">Cloud Security</span>
                 </div>
                 
                 <div class="job-footer">
-                    <span class="salary">$90K - $130K</span>
-                    <button class="view-btn">View Details</button>
+                    
+                    <button class="view-btn" onclick="viewRoleDetails('Green Cloud Architect')">View Details</button>
                 </div>
             </div>
             
@@ -567,7 +745,7 @@
                 <div class="job-meta">
                     <div class="meta-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>New York, NY</span>
+                        <span>Remote</span>
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-briefcase"></i>
@@ -575,23 +753,23 @@
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-users"></i>
-                        <span>15 Applications</span>
+                        <span>5 Profiles</span>
                     </div>
                 </div>
                 
                 <div class="job-description">
-                    Lead product strategy and development. Work with cross-functional teams to deliver world-class products.
+                   Optimize enterprise DevOps pipelines , Analyze datasets using Python or SQL
                 </div>
                 
                 <div class="job-skills">
-                    <span class="skill-tag">Product Strategy</span>
-                    <span class="skill-tag">Analytics</span>
-                    <span class="skill-tag">Agile</span>
+                    <span class="skill-tag">DevOps</span>
+                    <span class="skill-tag">CI/CD</span>
+                    <span class="skill-tag">SQL</span>
                 </div>
                 
                 <div class="job-footer">
-                    <span class="salary">$130K - $170K</span>
-                    <button class="view-btn">View Details</button>
+                    
+                    <button class="view-btn" onclick="viewRoleDetails('Green DevOps Engineer')">View Details</button>
                 </div>
             </div>
             
@@ -608,7 +786,7 @@
                 <div class="job-meta">
                     <div class="meta-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Boston, MA</span>
+                        <span>Hybrid</span>
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-briefcase"></i>
@@ -616,7 +794,7 @@
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-users"></i>
-                        <span>20 Applications</span>
+                        <span>10 Profiles</span>
                     </div>
                 </div>
                 
@@ -631,8 +809,8 @@
                 </div>
                 
                 <div class="job-footer">
-                    <span class="salary">$110K - $150K</span>
-                    <button class="view-btn">View Details</button>
+                  
+                    <button class="view-btn" onclick="viewRoleDetails('Data Scientist')">View Details</button>
                 </div>
             </div>
             
@@ -657,7 +835,7 @@
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-users"></i>
-                        <span>10 Applications</span>
+                        <span>11 Profiles</span>
                     </div>
                 </div>
                 
@@ -672,8 +850,8 @@
                 </div>
                 
                 <div class="job-footer">
-                    <span class="salary">$85K - $120K</span>
-                    <button class="view-btn">View Details</button>
+                    
+                    <button class="view-btn" onclick="viewRoleDetails('ESG Data Analyst')">View Details</button>
                 </div>
             </div>
             
@@ -690,7 +868,7 @@
                 <div class="job-meta">
                     <div class="meta-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Seattle, WA</span>
+                        <span>Remote</span>
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-briefcase"></i>
@@ -698,7 +876,7 @@
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-users"></i>
-                        <span>7 Applications</span>
+                        <span>6 Profiles</span>
                     </div>
                 </div>
                 
@@ -713,8 +891,8 @@
                 </div>
                 
                 <div class="job-footer">
-                    <span class="salary">$115K - $155K</span>
-                    <button class="view-btn">View Details</button>
+                  
+                    <button class="view-btn" onclick="viewRoleDetails('DevOps Engineer')">View Details</button>
                 </div>
             </div>
         </div>
@@ -886,6 +1064,99 @@
                 window.location.href = '/TalentPool/home/';
             }
         }
+
+        // View Details Popup Functionality
+        function viewRoleDetails(roleName) {
+            const modal = document.getElementById('roleDetailsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const candidatesList = document.getElementById('candidatesList');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Show modal and loading spinner
+            modal.style.display = 'block';
+            modalTitle.textContent = `Candidates for ${roleName}`;
+            candidatesList.innerHTML = '';
+            loadingSpinner.style.display = 'block';
+
+            // Fetch candidates data
+            fetch(`/TalentPool/role-candidates-popup/?role=${encodeURIComponent(roleName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    loadingSpinner.style.display = 'none';
+
+                    if (data.success) {
+                        if (data.candidates.length === 0) {
+                            candidatesList.innerHTML = '<div class="no-candidates">No candidates found with matching skills for this role.</div>';
+                            return;
+                        }
+
+                        // Create candidates list
+                        data.candidates.forEach(candidate => {
+                            const candidateCard = document.createElement('div');
+                            candidateCard.className = 'candidate-card';
+
+                            const skillsHtml = candidate.matched_skills.map(skill => 
+                                `<span class="matched-skill">${skill}</span>`
+                            ).join('');
+
+                            candidateCard.innerHTML = `
+                                <div class="candidate-header">
+                                    <div class="candidate-name">${candidate.name}</div>
+                                    <div class="match-score">Match: ${candidate.match_score}%</div>
+                                </div>
+                                <div class="candidate-info">
+                                    <div class="info-item"><strong>Current Role:</strong> ${candidate.current_role}</div>
+                                    <div class="info-item"><strong>Proficiency:</strong> ${candidate.proficiency_level}</div>
+                                    <div class="info-item"><strong>Email:</strong> ${candidate.email}</div>
+                                    <div class="info-item"><strong>Phone:</strong> ${candidate.phone}</div>
+                                </div>
+                                <div class="matched-skills-section">
+                                    <strong>Matched Skills (${candidate.matched_skills.length}/${candidate.total_required_skills}):</strong>
+                                    <div class="skills-container">${skillsHtml}</div>
+                                </div>
+                            `;
+
+                            candidatesList.appendChild(candidateCard);
+                        });
+                    } else {
+                        candidatesList.innerHTML = `<div class="error-message">Error: ${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    loadingSpinner.style.display = 'none';
+                    candidatesList.innerHTML = '<div class="error-message">Error loading candidates data.</div>';
+                    console.error('Error:', error);
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('roleDetailsModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('roleDetailsModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
     </script>
+
+    <!-- Role Details Modal -->
+    <div id="roleDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Role Candidates</h2>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="loadingSpinner" class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading candidates...</p>
+                </div>
+                <div id="candidatesList" class="candidates-list"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
